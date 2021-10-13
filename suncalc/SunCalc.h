@@ -1,19 +1,37 @@
 #pragma once
 
-// 度:分:秒
+// 度°分′秒″
 struct DegMinSec
 {
+    int sign;
     int deg;
     int min;
     double sec;
+
+    DegMinSec(int d, int m, double s) {
+        sign = (d >= 0) ? 1 : -1;
+        deg = abs(d);
+        min = m;
+        sec = s;
+    }
+    DegMinSec() : sign(1), deg(0), min(0), sec(0) {};
 };
 
 // 時:分:秒
 struct HourMinSec
 {
+    int sign;
     int hour;
     int min;
     double sec;
+
+    HourMinSec(int h, int m, double s) {
+        sign = (h >= 0) ? 1 : -1;
+        hour = abs(h);
+        min = m;
+        sec = s;
+    }
+    HourMinSec() : sign(1), hour(0), min(0), sec(0) {};
 };
 
 // 太陽の位置計算クラス
@@ -40,7 +58,10 @@ public:
     static HourMinSec rad2hms(double rad);
     static double dms2rad(DegMinSec  dms);
     static double hms2rad(HourMinSec hms);
-    
+    // 文字列に変換する
+    static char* dms2str(DegMinSec  dms);
+    static char* hms2str(HourMinSec hms);
+
     //********** 定数 **********
     static const double PI;
     static const double DEGS;
@@ -83,5 +104,9 @@ public:
 #define RAD2HMS(x) SunCalc::rad2hms(x)
 #define DMS2RAD(x) SunCalc::dms2rad(x)
 #define HMS2RAD(x) SunCalc::hms2rad(x)
-#define RAD2DEG(x) ((x) * SunCalc::RADS)
-#define DEG2RAD(x) ((x) * SunCalc::DEGS)
+#define RAD2DEG(x) ((x) * SunCalc::DEGS)
+#define DEG2RAD(x) ((x) * SunCalc::RADS)
+
+// 文字列への変換マクロ
+#define DMS2STR(x) SunCalc::dms2str(x)
+#define HMS2STR(x) SunCalc::hms2str(x)

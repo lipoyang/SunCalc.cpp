@@ -15,7 +15,9 @@ int main(void)
         printf("test number? (1-3) > ");
         int ret = scanf("%d", &num);
         if (ret != 1){
-            ret = scanf("%*s");
+            char buff[2];
+            ret = scanf("%1s", buff);
+            if (buff[0] == 'q') return 0;
             continue;
         }
         if (num < 1 || num > 3) continue;
@@ -49,35 +51,31 @@ void test1(void)
     printf("(lt, lg) = (%.1f, %.1f)\n", latit, longit);
     printf("J2000 days = %.2f\n", sun.d);
     
+    DegMinSec L = RAD2DMS(sun.L);
+    printf("Mean L = %7.3f (%s)\n",
+        RAD2DEG(sun.L), DMS2STR(L));
     DegMinSec lambda = RAD2DMS(sun.lambda);
-    printf("Lambda = %.3f (%d:%02d:%05.2f)\n",
-        RAD2DEG(sun.lambda), lambda.deg, lambda.min, lambda.sec);
-    
+    printf("Lambda = %7.3f (%s)\n",
+        RAD2DEG(sun.lambda), DMS2STR(lambda));
     DegMinSec delta = RAD2DMS(sun.delta);
-    printf("Delta = %.3f (%d:%02d:%05.2f)\n",
-        RAD2DEG(sun.delta), delta.deg, delta.min, delta.sec);
-    
+    printf("Delta  = %7.3f (%s)\n",
+        RAD2DEG(sun.delta), DMS2STR(delta));
     HourMinSec alpha = RAD2HMS(sun.alpha);
-    printf("Alpha = %.3f (%d:%02d:%05.2f)\n",
-        RAD2DEG(sun.alpha), alpha.hour, alpha.min, alpha.sec);
-    
+    printf("Alpha  = %7.3f (%s)\n",
+        RAD2DEG(sun.alpha), HMS2STR(alpha));
     HourMinSec equation = RAD2HMS(sun.equation);
-    printf("equation = %.3f (%d:%02d:%05.2f)\n",
-        RAD2DEG(sun.equation), equation.hour, equation.min, equation.sec);
-
+    printf("EoT    = %7.3f (%s)\n",
+        RAD2DEG(sun.equation), HMS2STR(equation));
     HourMinSec t_UTC = RAD2HMS(sun.t_UTC);
-    printf("UTC  = %.3f (%d:%02d:%05.2f)\n",
-        RAD2DEG(sun.t_UTC), t_UTC.hour, t_UTC.min, t_UTC.sec);
-
+    printf("UTC    = %7.3f (%s)\n",
+        RAD2DEG(sun.t_UTC), HMS2STR(t_UTC));
     HourMinSec t_LMT = RAD2HMS(sun.t_LMT);
-    printf("LMT  = %.3f (%d:%02d:%05.2f)\n",
-        RAD2DEG(sun.t_LMT), t_LMT.hour, t_LMT.min, t_LMT.sec);
-
+    printf("LMT    = %7.3f (%s)\n",
+        RAD2DEG(sun.t_LMT), HMS2STR(t_LMT));
     HourMinSec t_LTST = RAD2HMS(sun.t_LTST);
-    printf("LTST = %.3f (%d:%02d:%05.2f)\n",
-        RAD2DEG(sun.t_LTST), t_LTST.hour, t_LTST.min, t_LTST.sec);
-
+    printf("LTST   = %7.3f (%s)\n",
+        RAD2DEG(sun.t_LTST), HMS2STR(t_LTST));
     HourMinSec t_LST = RAD2HMS(sun.t_LST);
-    printf("LST  = %.3f (%d:%02d:%05.2f)\n",
-        RAD2DEG(sun.t_LST), t_LST.hour, t_LST.min, t_LST.sec);
+    printf("LST    = %7.3f (%s)\n",
+        RAD2DEG(sun.t_LST), HMS2STR(t_LST));
 }

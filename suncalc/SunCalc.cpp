@@ -7,6 +7,7 @@
 #define _USE_MATH_DEFINES // for M_PI
 #define _CRT_SECURE_NO_WARNINGS // for VC++
 
+#include <stdio.h>
 #include <math.h>
 #include "SunCalc.h"
 
@@ -63,15 +64,13 @@ void SunCalc::calc()
     // 太陽赤経α[rad] と 太陽赤緯δ[rad]
     alpha = atan2(cos(obliq) * sin(lambda), cos(lambda));
     delta =  asin(sin(obliq) * sin(lambda));
+    alpha = rad_0to2PI(alpha);
 
     // 均時差[rad]
-    equation = L - alpha;
-//    double LL = L - alpha;
-//    if (L < PI) LL += 2.0*PI;
-//    equation = 1440.0 * (1.0 - LL / PI/2.0);
-    
+    equation = alpha - L;
+
     // UTC時刻[rad]
-    HourMinSec hms_utc = { hour, min, (double)sec };
+    HourMinSec hms_utc = HourMinSec(hour, min, (double)sec);
     t_UTC  = hms2rad(hms_utc);
     // 地方平均時[rad]
     t_LMT  = t_UTC - lon;
@@ -129,22 +128,20 @@ double SunCalc::rad_0to2PI(double x)
     return x;
 }
 
-// ラジアンを度:分:秒に換算
+// ラジアンを度°分′秒″に換算
 // rad: ラジアン
-// return: 度:分:秒
+// return: 度°分′秒″
 DegMinSec  SunCalc::rad2dms(double rad)
 {
     DegMinSec x;
+    x.sign = (rad >= 0) ? 1 : -1;
+    rad = fabs(rad);
     
     double f_deg = RAD2DEG(rad);
     x.deg = (int)f_deg;
-    
     double f_min = (f_deg - (double)(x.deg)) * 60.0;
-    if(f_min < 0) f_min = -f_min;
     x.min = (int)f_min;
-    
     x.sec = (f_min - (double)(x.min)) * 60.0;
-    
     return x;
 }
 
@@ -154,27 +151,27 @@ DegMinSec  SunCalc::rad2dms(double rad)
 HourMinSec SunCalc::rad2hms(double rad)
 {
     HourMinSec x;
-    
-    double f_hour = rad_0to2PI(rad) * 12.0 / PI;
+    x.sign = (rad >= 0) ? 1 : -1;
+    rad = fabs(rad);
+
+    double f_hour = rad * 12.0 / PI;
     x.hour = (int)f_hour;
-    
     double f_min = (f_hour - (double)x.hour) * 60.0;
     x.min = (int)f_min;
-    
     x.sec = (f_min - (double)x.min) * 60.0;
-    
     return x;
 }
 
-// 度:分:秒をラジアンに換算
-// dms: 度:分:秒
+// 度°分′秒″をラジアンに換算
+// dms: 度°分′秒″
 // return: ラジアン
 double SunCalc::dms2rad(DegMinSec  dms)
 {
     double f_deg = (double)dms.deg;
     f_deg += (double)dms.min / 60.0;
     f_deg += (double)dms.sec / 3600.0;
-    
+
+    if (dms.sign < 0) f_deg = -f_deg;
     double rad = DEG2RAD(f_deg);
     return rad;
 }
@@ -188,7 +185,33 @@ double SunCalc::hms2rad(HourMinSec hms)
     f_hour += (double)hms.min / 60.0;
     f_hour += (double)hms.sec / 3600.0;
     
+    if (hms.sign < 0) f_hour = -f_hour;
     double rad = f_hour * PI / 12.0;
     return rad;
 }
 
+// 度°分′秒″を文字列に変換する
+// dms: 度°分′秒″
+// return: 文字列
+// ※この関数はスレッドセーフでない
+char* SunCalc::dms2str(DegMinSec  dms)
+{
+    static char buff[16];
+    sprintf(buff, "%c%3d,%02d,%05.2f",
+        (dms.sign) > 0 ? ' ' : '-',
+        dms.deg, dms.min, dms.sec);
+    return buff;
+}
+
+// 時:分:秒を文字列に変換する
+// hms: 時:分:秒
+// return: 文字列
+// ※この関数はスレッドセーフでない
+char* SunCalc::hms2str(HourMinSec hms)
+{
+    static char buff[16];
+    sprintf(buff, "%c%3d:%02d:%05.2f",
+        (hms.sign) > 0 ? ' ' : '-',
+        hms.hour, hms.min, hms.sec);
+    return buff;
+}
