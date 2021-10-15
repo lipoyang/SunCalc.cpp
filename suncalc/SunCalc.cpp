@@ -54,18 +54,14 @@ void SunCalc::calc()
 {
     // UTC日時をJ2000通日に換算
     d = J2000(year, month, day, hour, min, sec);
-    
     // 太陽黄経λ[rad]
     lambda = ecliptic_longitude(d, L, g);
-    
     // 赤道傾斜角ε[rad]
     obliq = 23.439 * RADS - .0000004 * RADS * d;
-
     // 太陽赤経α[rad] と 太陽赤緯δ[rad]
     alpha = atan2(cos(obliq) * sin(lambda), cos(lambda));
     delta =  asin(sin(obliq) * sin(lambda));
     alpha = rad_0to2PI(alpha);
-
     // 均時差[rad]
     equation = alpha - L;
 
@@ -73,11 +69,11 @@ void SunCalc::calc()
     HourMinSec hms_utc = HourMinSec(hour, min, (double)sec);
     t_UTC  = hms2rad(hms_utc);
     // 地方平均時[rad]
-    t_LMT  = t_UTC - lon;
+    t_LMT  = rad_0to2PI(t_UTC + lon);
     // 地方視太陽時[rad]
-    t_LTST = t_LMT + equation;  // TODO
+    t_LTST = rad_0to2PI(t_LMT - equation);
     // 地方恒星時[rad]
-    t_LST  = t_LTST + alpha; // TODO
+    t_LST  = rad_0to2PI(t_LTST + PI + alpha);
 }
 
 //********** 静的メソッド **********
@@ -210,7 +206,7 @@ char* SunCalc::dms2str(DegMinSec  dms)
 char* SunCalc::hms2str(HourMinSec hms)
 {
     static char buff[16];
-    sprintf(buff, "%c%3d:%02d:%05.2f",
+    sprintf(buff, "%c%2d:%02d:%05.2f",
         (hms.sign) > 0 ? ' ' : '-',
         hms.hour, hms.min, hms.sec);
     return buff;
