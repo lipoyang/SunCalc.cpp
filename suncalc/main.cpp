@@ -156,7 +156,7 @@ void test3(void)
         printf("%7.3f, (%s)\n", RAD2DEG(sun.equation), HMS2STR(equation));
 
         hour += 2;
-        if (hour > 24) {
+        if (hour >= 24) {
             hour = 0;
             day++;
         }
@@ -240,7 +240,7 @@ void test5(void)
         printf("%s\n", HMS2STR(equation));
 
         hour += 2;
-        if (hour > 24) {
+        if (hour >= 24) {
             hour = 0;
             day++;
         }

@@ -192,10 +192,19 @@ double SunCalc::hms2rad(HourMinSec hms)
 // ※この関数はスレッドセーフでない
 char* SunCalc::dms2str(DegMinSec  dms)
 {
+    int d = dms.deg;
+    int m = dms.min;
+    double s = dms.sec;
+    if ((int)(s * 1000) % 6000 >= 5995) {
+        s = 0;
+        if (++m == 60) {
+            m = 0;
+            if (++d == 360) d = 0;
+        }
+    }
     static char buff[16];
     sprintf(buff, "%c%3d,%02d,%05.2f",
-        (dms.sign) > 0 ? ' ' : '-',
-        dms.deg, dms.min, dms.sec);
+        (dms.sign) > 0 ? ' ' : '-', d, m, s);
     return buff;
 }
 
@@ -205,9 +214,18 @@ char* SunCalc::dms2str(DegMinSec  dms)
 // ※この関数はスレッドセーフでない
 char* SunCalc::hms2str(HourMinSec hms)
 {
+    int h = hms.hour;
+    int m = hms.min;
+    double s = hms.sec;
+    if ((int)(s * 1000) % 6000 >= 5995) {
+        s = 0;
+        if (++m == 60) {
+            m = 0;
+            if (++h == 24) h = 0;
+        }
+    }
     static char buff[16];
     sprintf(buff, "%c%2d:%02d:%05.2f",
-        (hms.sign) > 0 ? ' ' : '-',
-        hms.hour, hms.min, hms.sec);
+        (hms.sign) > 0 ? ' ' : '-', h, m, s);
     return buff;
 }
