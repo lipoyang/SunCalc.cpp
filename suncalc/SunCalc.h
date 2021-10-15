@@ -93,7 +93,7 @@ public:
     double equation;    // 均時差(equation of time)
     
     // 時刻 (単位が[rad]であることに注意)
-    double t_UTC;   // 世界協定時[rad]   UTC (Coordinated Universal Time)
+    double t_UTC;   // 協定世界時[rad]   UTC (Coordinated Universal Time)
     double t_LMT;   // 地方平均時[rad]   LMT (Local Mean Time)
     double t_LTST;  // 地方視太陽時[rad] LTST (Local True Solar Time)
     double t_LST;   // 地方恒星時[rad]   LST (Local Sidereal Time)

@@ -27,7 +27,7 @@
 - eqation [rad] : 均時差
 
 ### 時刻
-- t_UTC [rad] : 世界協定時
+- t_UTC [rad] : 協定世界時
 - t_LMT [rad] : 地方平均時
 - t_LTST [rad] : 地方視太陽時
 - t_LST [rad] : 地方恒星時
